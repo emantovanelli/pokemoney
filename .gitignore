@@ -1,3 +1,7 @@
+*.pyc
 .env
-/sprites/
-/.vscode/
+\.vscode\
+# User-specific stuff:
+.idea/*
+pikachu.jpg
+capa.jpg
