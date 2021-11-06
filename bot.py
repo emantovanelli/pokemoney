@@ -3,6 +3,7 @@ import json
 import tweepy
 import requests
 import sys
+from time import sleep
 from os.path import exists
 from apscheduler.schedulers.blocking import BlockingScheduler
 
@@ -47,6 +48,30 @@ def get_pokemon(pokemon_id):
     path = get_pokemon_sprite(pokemon_id, qual_e_esse_pokemon['sprites'])
     return qual_e_esse_pokemon['name'].capitalize(), path
 
+def get_pokemons_sprite(range_min, range_max):
+    for i in range(range_max, range_min, -1):
+        path = 'sprites/' + str(i) + '.png'
+        file_exists = exists(path)
+        if not file_exists:
+            log('Baixando infos do pokemon: ' + str(i))
+            request_pokemon = requests.get(
+                'https://pokeapi.co/api/v2/pokemon/{}'.format(i))
+
+            qual_e_esse_pokemon = json.loads(request_pokemon._content)
+            log('Infos do {} baixadas'.format(qual_e_esse_pokemon['name']))
+
+            with open(path, 'wb') as handler:
+                log('Baixando imagem do {}'.format(qual_e_esse_pokemon['name']))
+
+                if qual_e_esse_pokemon['sprites']['other']['official-artwork']['front_default'] is not None:
+                    img_data = requests.get(
+                        qual_e_esse_pokemon['sprites']['other']['official-artwork']['front_default']).content
+                else:
+                    img_data = requests.get(qual_e_esse_pokemon['sprites']['front-default']).content
+                handler.write(img_data)
+                handler.close()
+                log('Imagem do {} baixada'.format(qual_e_esse_pokemon['name']))
+        sleep(1)
 
 def make_tweet(api, config, data, pokemon_name, pokemon_id, pokemon_sprite_path):
     if 'dolar_value' in config:
@@ -113,8 +138,9 @@ def main():
     make_tweet(api, config_json, data, pokemon_name,
                poke_value, sprite_path)
 
-#
+
 # if __name__ == "__main__":
 #     main()
 
+get_pokemons_sprite(300, 700)
 sched.start()
