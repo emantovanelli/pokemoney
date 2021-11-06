@@ -142,5 +142,4 @@ def main():
 # if __name__ == "__main__":
 #     main()
 
-get_pokemons_sprite(300, 700)
 sched.start()
