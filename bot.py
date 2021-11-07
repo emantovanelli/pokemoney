@@ -102,6 +102,7 @@ def make_tweet(api, config, data, pokemon_name, pokemon_id, pokemon_sprite_path)
 
         config_file = open('config.json', 'w')
         json.dump(data, config_file)
+        config_file.close()
     except Exception as e:
         print(e)
 
@@ -129,6 +130,8 @@ def main():
 
     data = {}
     data['dolar_value'], data['timestamp'] = get_dolar()
+
+    log('dolar value: {}'.format(data['dolar_value']))
 
     poke_value = data['dolar_value'].replace('.', '')
     pokemon_name, sprite_path = get_pokemon(poke_value)
