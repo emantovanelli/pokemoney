@@ -1,0 +1,3 @@
+git push heroku main
+heroku ps:scale clock=1
+heroku logs

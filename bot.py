@@ -9,7 +9,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 sched = BlockingScheduler(timezone="america/sao_paulo")
 
 
-@sched.scheduled_job('interval', hours=3)
+@sched.scheduled_job('interval', hours=4)
 def main():
     api = config_twitter_api()
     log('API configured')
