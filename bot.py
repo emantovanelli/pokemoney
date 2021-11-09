@@ -1,7 +1,8 @@
 import json
+from time import sleep
 from log import log
 from currency import get_dolar
-from local_dropbox import get_document, save_document, login
+from local_dropbox import get_document, save_document
 from pokemon import get_pokemon
 from twitter import config_twitter_api, make_tweet
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -39,8 +40,19 @@ def main():
 
     log('pokemon: {}'.format(pokemon_name))
 
-    make_tweet(api, config_json, data, pokemon_name,
-               poke_value, sprite_path)
+    for tentativa in range(3):
+        try:
+            make_tweet(api, config_json, data, pokemon_name,
+                       poke_value, sprite_path)
+        except Exception as e:
+            sleep(60)
+            print(e)
+        else:
+            break
+    else:
+        log('make tweet error even with retries')
+
+
 
     config_file = open('config.json', 'w')
     json.dump(data, config_file)
